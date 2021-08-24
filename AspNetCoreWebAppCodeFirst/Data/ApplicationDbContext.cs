@@ -12,6 +12,7 @@ namespace AspNetCoreWebAppCodeFirst.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
+        public DbSet<Manufacturer> Manufacturers { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Truck> Trucks { get; set; }
     }
