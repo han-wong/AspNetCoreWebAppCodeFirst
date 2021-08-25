@@ -1,0 +1,42 @@
+﻿@page
+@model AspNetCoreWebAppCodeFirst.Pages.Cars.EditModel
+@{
+    ViewData["Title"] = "Edit Car";
+}
+<form method="post">
+    <div class="form-group">
+        <label asp-for="RegNo">Regno</label>
+        <input class="form-control" asp-for="RegNo" value="@Model.RegNo" />
+        <span asp-validation-for="RegNo" class="field-validation-error"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="ManufacturerId">Manufacturer</label>
+
+        <select class="form-control" asp-for="ManufacturerId"
+                asp-items="@Model.AllManufacturers"></select>
+        @*<textarea rows="5" cols="30"
+            class="form-control" asp-for="Manufacturer"></textarea>*@
+        <span asp-validation-for="ManufacturerId" class="field-validation-error"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Model"></label>
+        <input asp-for="Model" class="form-control" />
+        <span asp-validation-for="Model" class="field-validation-error"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Price"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="field-validation-error"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Year"></label>
+        <input asp-for="Year" class="form-control" />
+        <span asp-validation-for="Year" class="field-validation-error"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="HasRadio"></label>
+        <input asp-for="HasRadio" class="form-control" />
+        <span asp-validation-for="HasRadio" class="field-validation-error"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Spara</button>
+</form>

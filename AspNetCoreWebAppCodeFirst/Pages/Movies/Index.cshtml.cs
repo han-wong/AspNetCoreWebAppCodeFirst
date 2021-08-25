@@ -7,20 +7,22 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using AspNetCoreWebAppCodeFirst.Data;
 
-namespace AspNetCoreWebAppCodeFirst.Pages
+namespace AspNetCoreWebAppCodeFirst.Pages.Movies
 {
     public class IndexModel : PageModel
     {
-        private readonly AspNetCoreWebAppCodeFirst.Data.ApplicationDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public IndexModel(AspNetCoreWebAppCodeFirst.Data.ApplicationDbContext context)
+        public IndexModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
+        public IList<Movie> Movie { get;set; }
 
         public async Task OnGetAsync()
         {
+            Movie = await _context.Movies.ToListAsync();
         }
     }
 }
