@@ -1,0 +1,24 @@
+﻿@page
+@model AspNetCoreWebAppCodeFirst.Pages.CarsModel
+@{
+    ViewData["Title"] = "Cars";
+}
+
+<table class="table">
+    @foreach (var car in Model.Cars)
+    {
+        <tr>
+            <td>@car.Model</td>
+            <td>@car.Manufacturer</td>
+            <td>@car.Price</td>
+            <td>@car.Year</td>
+            <td>
+                <a href="#" class="btn btn-primary">View</a>
+                <a asp-page="./Edit" asp-route-id="@car.Id">Edit</a> |
+                <a asp-page="./Details" asp-route-id="@car.Id">Details</a> |
+                <a asp-page="./Delete" asp-route-id="@car.Id">Delete</a>
+            </td>
+        </tr>
+    }
+</table>
+

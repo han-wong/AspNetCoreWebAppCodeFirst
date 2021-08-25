@@ -8,6 +8,26 @@ namespace AspNetCoreWebAppCodeFirst.Data
 {
     public class DataInitializer
     {
+        private static readonly Dictionary<string, Dictionary<string, List<string>>> 
+            _vehicles = new Dictionary<string, Dictionary<string, List<string>>> {
+            { 
+                "cars", new Dictionary<string, List<string>> {
+                    { "XC90", new List<string> { "Volvo", "250000", "2002" } },
+                    { "Supra", new List<string> { "Toyota", "160000", "1978" } },
+                    { "Leaf", new List<string> { "Nissan", "170000", "2011" } },
+                    { "Polo", new List<string> { "Volkswagen", "180000", "2010" } },
+                    { "S-Max", new List<string> { "Ford", "300000", "2007" } },
+                }
+            },
+            {
+                "trucks", new Dictionary<string, List<string>> {
+                    { "R730", new List<string> { "Scania", "425000", "2011" } },
+                    { "TGX", new List<string> { "MAN", "472000", "2017" } },
+                    { "Actros", new List<string> { "Mercedes-Benz", "599000", "2011" } },
+                }
+            },
+        };
+
         public static void SeedData(ApplicationDbContext dbContext)
         {
             dbContext.Database.Migrate();
@@ -18,93 +38,42 @@ namespace AspNetCoreWebAppCodeFirst.Data
 
         private static void SeedManufacturers(ApplicationDbContext dbContext)
         {
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Ford"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Ford" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "MAN"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "MAN" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Mercedes-Benz"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Mercedes-Benz" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Nissan"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Nissan" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Scania"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Scania" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Toyota"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Toyota" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Volkswagen"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Volkswagen" });
-            if (!dbContext.Manufacturers.Any(m => m.Name == "Volvo"))
-                dbContext.Manufacturers.Add(new Manufacturer { Name = "Volvo" });
+            foreach (var type in _vehicles)
+            {
+                foreach (var model in type.Value)
+                {
+                    if (!dbContext.Manufacturers.Any(m => m.Name == model.Value[0]))
+                        dbContext.Manufacturers.Add(new Manufacturer { Name = model.Value[0] });
+                }
+            }
+
+            dbContext.SaveChanges();
         }
 
         private static void SeedCars(ApplicationDbContext dbContext)
         {
             var cars = dbContext.Cars;
             var manufacturers = dbContext.Manufacturers;
-
-            var car = cars.First(c => c.Model == "XC90");
-            var manufacturer = manufacturers.First(m => m.Name == "Volvo");
-            if (car == null)
-                cars.Add(new Car
+            var models = _vehicles["cars"];
+            
+            foreach (var model in models)
+            {
+                var manufacturer = manufacturers.First(m => m.Name == model.Value[0]);
+                if (!cars.Any(c => c.Model == model.Key))
+                    cars.Add(new Car
+                    {
+                        Manufacturer = manufacturer,
+                        Model = model.Key,
+                        Price = int.Parse(model.Value[1]),
+                        Year = int.Parse(model.Value[2]),
+                    });
+                else
                 {
-                    Manufacturer = manufacturer,
-                    Model = "XC90",
-                    Price = 250000,
-                    Year = 2002
-                });
-            else if (car.Manufacturer == null)
-                car.Manufacturer = manufacturer;
-
-            car = cars.First(c => c.Model == "Supra");
-            manufacturer = manufacturers.First(m => m.Name == "Toyota");
-            if (car == null)
-                cars.Add(new Car
-                {
-                    Manufacturer = manufacturer,
-                    Model = "Supra",
-                    Price = 160000,
-                    Year = 1978
-                });
-            else if (car.Manufacturer == null)
-                car.Manufacturer = manufacturer;
-
-            car = cars.First(c => c.Model == "Leaf");
-            manufacturer = manufacturers.First(m => m.Name == "Nissan");
-            if (car == null)
-                cars.Add(new Car
-                {
-                    Manufacturer = manufacturer,
-                    Model = "Leaf",
-                    Price = 170000,
-                    Year = 2011
-                });
-            else if (car.Manufacturer == null)
-                car.Manufacturer = manufacturer;
-
-            car = cars.First(c => c.Model == "Polo");
-            manufacturer = manufacturers.First(m => m.Name == "Volkswagen");
-            if (car == null)
-                cars.Add(new Car
-                {
-                    Manufacturer = manufacturer,
-                    Model = "Polo",
-                    Price = 180000,
-                    Year = 2010
-                });
-            else if (car.Manufacturer == null)
-                car.Manufacturer = manufacturer;
-
-            car = cars.First(c => c.Model == "S-Max");
-            manufacturer = manufacturers.First(m => m.Name == "Ford");
-            if (car == null)
-                cars.Add(new Car
-                {
-                    Manufacturer = manufacturer,
-                    Model = "S-Max",
-                    Price = 300000,
-                    Year = 2007
-                });
-            else if (car.Manufacturer == null)
-                car.Manufacturer = manufacturer;
+                    var car = cars.First(c => c.Model == model.Key);
+                    if (car.Manufacturer == null)
+                        car.Manufacturer = manufacturer;
+                }
+            }
 
             dbContext.SaveChanges();
         }
@@ -113,45 +82,26 @@ namespace AspNetCoreWebAppCodeFirst.Data
         {
             var trucks = dbContext.Trucks;
             var manufacturers = dbContext.Manufacturers;
-
-            var truck = trucks.First(c => c.Model == "R730");
-            var manufacturer = manufacturers.First(m => m.Name == "Scania");
-            if (truck == null)
-                trucks.Add(new Truck
+            var models = _vehicles["trucks"];
+            
+            foreach (var model in models)
+            {
+                var manufacturer = manufacturers.First(m => m.Name == model.Value[0]);
+                if (!trucks.Any(c => c.Model == model.Key))
+                    trucks.Add(new Truck
+                    {
+                        Manufacturer = manufacturer,
+                        Model = model.Key,
+                        Price = int.Parse(model.Value[1]),
+                        Year = int.Parse(model.Value[2]),
+                    });
+                else
                 {
-                    Manufacturer = manufacturer,
-                    Model = "R730",
-                    Price = 425000,
-                    Year = 2011
-                });
-            else if (truck.Manufacturer == null)
-                truck.Manufacturer = manufacturer;
-
-            truck = trucks.First(c => c.Model == "TGX");
-            manufacturer = manufacturers.First(m => m.Name == "MAN");
-            if (truck == null)
-                trucks.Add(new Truck
-                {
-                    Manufacturer = manufacturer,
-                    Model = "TGX",
-                    Price = 472000,
-                    Year = 2017
-                });
-            else if (truck.Manufacturer == null)
-                truck.Manufacturer = manufacturer;
-
-            truck = trucks.First(c => c.Model == "Actros");
-            manufacturer = manufacturers.First(m => m.Name == "Mercedes-Benz");
-            if (truck == null)
-                trucks.Add(new Truck
-                {
-                    Manufacturer = manufacturer,
-                    Model = "Actros",
-                    Price = 599000,
-                    Year = 2011
-                });
-            else if (truck.Manufacturer == null)
-                truck.Manufacturer = manufacturer;
+                    var car = trucks.First(c => c.Model == model.Key);
+                    if (car.Manufacturer == null)
+                        car.Manufacturer = manufacturer;
+                }
+            }
 
             dbContext.SaveChanges();
         }
