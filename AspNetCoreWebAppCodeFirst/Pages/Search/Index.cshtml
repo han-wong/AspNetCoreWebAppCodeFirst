@@ -1,0 +1,15 @@
+﻿@page
+@model AspNetCoreWebAppCodeFirst.Pages.Search.IndexModel
+@{
+}
+<h1>Du sökte på @Model.SearchWord</h1>
+
+<h2>Cars</h2>
+
+<ul>
+    @foreach (var item in Model.SearchItems)
+    {
+        <li>@item</li>
+
+    }
+</ul>

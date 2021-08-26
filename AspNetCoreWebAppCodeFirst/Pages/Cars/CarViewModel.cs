@@ -10,6 +10,7 @@ namespace AspNetCoreWebAppCodeFirst.Pages.Cars
         public int Id { get; set; }
         public string RegNo { get; set; }
         public string Model { get; set; }
+        public int ManufacturerId { get; set; }
         public string ManufacturerName { get; set; }
         public decimal Price { get; set; }
         public int Year { get; set; }

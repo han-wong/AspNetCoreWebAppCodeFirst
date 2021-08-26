@@ -12,37 +12,39 @@ namespace AspNetCoreWebAppCodeFirst.Pages.Cars
     public class DetailsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-
         public DetailsModel(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        public CarViewModel Car { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public int Id { get; set; }
+        public string RegNo { get; set; }
+        public string Model { get; set; }
+        public string Manufacturer { get; set; }
+        public decimal Price { get; set; }
+        public int Year { get; set; }
+
+
+        public async Task<IActionResult> OnGetAsync(int? carId)
         {
-            if (id == null)
+            if (carId == null)
+            {
+                return NotFound();
+            }
+            var currentCar = await _context.Cars.FirstOrDefaultAsync(car => car.Id == carId);
+            if (currentCar == null)
             {
                 return NotFound();
             }
 
-            var car = await _context.Cars.Include(car => car.Manufacturer).FirstOrDefaultAsync(car => car.Id == id);
+            Id = (int)carId;
+            Manufacturer = _context.Manufacturers.First(manufacturer => manufacturer.Cars.Contains(currentCar)).Name;
+            Model = currentCar.Model;
+            Price = currentCar.Price;
+            RegNo = currentCar.RegNo;
+            Year = currentCar.Year;
 
-            if (car == null)
-            {
-                return NotFound();
-            }
-
-            Car = new CarViewModel
-            {
-                Id = car.Id,
-                ManufacturerName = car.Manufacturer.Name,
-                Model = car.Model,
-                Price = car.Price,
-                RegNo = car.RegNo,
-                Year = car.Year,
-            };
             return Page();
         }
     }

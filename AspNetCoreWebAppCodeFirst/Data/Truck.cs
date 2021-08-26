@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreWebAppCodeFirst.Data
 {
-    public class Truck
+    public class Truck : IVehicle
     {
         public int Id { get; set; }
         public int LoadVolumeKvm { get; set; }
-        public Manufacturer Manufacturer { get; set; }
+        public string Manufacturer { get; set; }
         public string Model { get; set; }
         public decimal Price { get; set; }
         public string RegNo { get; set; }

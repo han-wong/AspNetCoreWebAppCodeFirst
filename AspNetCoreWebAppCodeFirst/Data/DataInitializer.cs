@@ -8,102 +8,115 @@ namespace AspNetCoreWebAppCodeFirst.Data
 {
     public class DataInitializer
     {
-        private static readonly Dictionary<string, Dictionary<string, List<string>>> 
-            _vehicles = new Dictionary<string, Dictionary<string, List<string>>> {
-            { 
-                "cars", new Dictionary<string, List<string>> {
-                    { "XC90", new List<string> { "Volvo", "250000", "2002" } },
-                    { "Supra", new List<string> { "Toyota", "160000", "1978" } },
-                    { "Leaf", new List<string> { "Nissan", "170000", "2011" } },
-                    { "Polo", new List<string> { "Volkswagen", "180000", "2010" } },
-                    { "S-Max", new List<string> { "Ford", "300000", "2007" } },
-                }
-            },
+        private static readonly List<Manufacturer> _seedManufacturers = new()
+        {
+            new Manufacturer
             {
-                "trucks", new Dictionary<string, List<string>> {
-                    { "R730", new List<string> { "Scania", "425000", "2011" } },
-                    { "TGX", new List<string> { "MAN", "472000", "2017" } },
-                    { "Actros", new List<string> { "Mercedes-Benz", "599000", "2011" } },
-                }
+                Name = "Volvo",
+                Cars = new() { new Car { RegNo = "AAA123", Year = 2002, Price = 250000, Model = "XC90" }, },
+                Trucks = new()
+            },
+            new Manufacturer
+            {
+                Name = "Toyota",
+                Cars = new() { new Car { RegNo = "BBB456", Year = 1978, Price = 160000, Model = "Supra" }, },
+                Trucks = new()
+            },
+            new Manufacturer
+            {
+                Name = "Nissan",
+                Cars = new() { new Car { RegNo = "CCC789", Year = 2011, Price = 170000, Model = "Leaf" }, },
+                Trucks = new()
+            },
+            new Manufacturer
+            {
+                Name = "Volkswagen",
+                Cars = new() { new Car { RegNo = "DDD135", Year = 2010, Price = 180000, Model = "Polo" }, },
+                Trucks = new()
+            },
+            new Manufacturer
+            {
+                Name = "Ford",
+                Cars = new() { new Car { RegNo = "EEE246", Year = 2007, Price = 300000, Model = "S-Max" }, },
+                Trucks = new()
+            },
+            new Manufacturer
+            {
+                Name = "Tesla",
+                Cars = new() { new Car { RegNo = "COVID9", Year = 2019, Price = 1000000, Model = "Model S" }, },
+                Trucks = new()
+            },
+            new Manufacturer
+            {
+                Name = "Scania",
+                Cars = new(),
+                Trucks = new() { new Truck { RegNo = "FFF666", Year = 2011, Price = 425000, Model = "R730" }, }
+            },
+            new Manufacturer
+            {
+                Name = "MAN",
+                Cars = new(),
+                Trucks = new() { new Truck { RegNo = "ABC111", Year = 2017, Price = 472000, Model = "TGX" }, }
+            },
+            new Manufacturer
+            {
+                Name = "Mercedes-Benz",
+                Cars = new(),
+                Trucks = new() { new Truck { RegNo = "DEF222", Year = 2011, Price = 599000, Model = "Actros" }, }
             },
         };
 
-        public static void SeedData(ApplicationDbContext dbContext)
+        public static void SeedData(ApplicationDbContext context)
         {
-            dbContext.Database.Migrate();
-            SeedManufacturers(dbContext);
-            SeedCars(dbContext);
-            SeedTrucks(dbContext);
+            context.Database.Migrate();
+            if (!context.Manufacturers.Any())
+            {
+                SeedManufacturers(context);
+                SeedCars(context);
+                SeedTrucks(context);
+            }
         }
 
-        private static void SeedManufacturers(ApplicationDbContext dbContext)
+        private static void SeedManufacturers(ApplicationDbContext context)
         {
-            foreach (var type in _vehicles)
+            foreach (var seedManufacturer in _seedManufacturers)
             {
-                foreach (var model in type.Value)
+                var seedName = seedManufacturer.Name;
+                if (!context.Manufacturers.Any(manufacturer => manufacturer.Name == seedName))
+                    context.Manufacturers.Add(new Manufacturer { Name = seedName });
+            }
+
+            context.SaveChanges();
+        }
+
+        private static void SeedCars(ApplicationDbContext context)
+        {
+            foreach (var seedManufacturer in _seedManufacturers)
+            {
+                var contextCars = context.Manufacturers.First(manufacturer => manufacturer.Name == seedManufacturer.Name).Trucks;
+                foreach (var seedCar in seedManufacturer.Trucks)
                 {
-                    if (!dbContext.Manufacturers.Any(m => m.Name == model.Value[0]))
-                        dbContext.Manufacturers.Add(new Manufacturer { Name = model.Value[0] });
+                    if (contextCars.Any(car => car.RegNo == seedCar.RegNo))
+                        contextCars.Add(seedCar);
                 }
             }
 
-            dbContext.SaveChanges();
+            context.SaveChanges();
         }
 
-        private static void SeedCars(ApplicationDbContext dbContext)
+        private static void SeedTrucks(ApplicationDbContext context)
         {
-            var cars = dbContext.Cars;
-            var manufacturers = dbContext.Manufacturers;
-            var models = _vehicles["cars"];
-            
-            foreach (var model in models)
+            foreach (var seedManufacturer in _seedManufacturers)
             {
-                var manufacturer = manufacturers.First(m => m.Name == model.Value[0]);
-                if (!cars.Any(c => c.Model == model.Key))
-                    cars.Add(new Car
-                    {
-                        Manufacturer = manufacturer,
-                        Model = model.Key,
-                        Price = int.Parse(model.Value[1]),
-                        Year = int.Parse(model.Value[2]),
-                    });
-                else
+                var contextTrucks = context.Manufacturers.First(manufacturer => manufacturer.Name == seedManufacturer.Name).Trucks;
+                foreach (var seedTruck in seedManufacturer.Trucks)
                 {
-                    var car = cars.First(c => c.Model == model.Key);
-                    if (car.Manufacturer == null)
-                        car.Manufacturer = manufacturer;
+                    if (contextTrucks.Any(truck => truck.RegNo == seedTruck.RegNo))
+                        contextTrucks.Add(seedTruck);
                 }
             }
 
-            dbContext.SaveChanges();
-        }
-
-        private static void SeedTrucks(ApplicationDbContext dbContext)
-        {
-            var trucks = dbContext.Trucks;
-            var manufacturers = dbContext.Manufacturers;
-            var models = _vehicles["trucks"];
-            
-            foreach (var model in models)
-            {
-                var manufacturer = manufacturers.First(m => m.Name == model.Value[0]);
-                if (!trucks.Any(c => c.Model == model.Key))
-                    trucks.Add(new Truck
-                    {
-                        Manufacturer = manufacturer,
-                        Model = model.Key,
-                        Price = int.Parse(model.Value[1]),
-                        Year = int.Parse(model.Value[2]),
-                    });
-                else
-                {
-                    var car = trucks.First(c => c.Model == model.Key);
-                    if (car.Manufacturer == null)
-                        car.Manufacturer = manufacturer;
-                }
-            }
-
-            dbContext.SaveChanges();
+            context.SaveChanges();
         }
     }
 }

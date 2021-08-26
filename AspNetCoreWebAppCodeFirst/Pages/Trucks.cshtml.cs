@@ -31,7 +31,7 @@ namespace AspNetCoreWebAppCodeFirst.Pages
             Trucks = _context.Trucks.Select(c => new TruckViewModel
             {
                 Model = c.Model,
-                Manufacturer = _context.Manufacturers.First(m => m.Id == c.Manufacturer.Id).Name,
+                //Manufacturer = _context.Manufacturers.First(m => m.Id == c.Manufacturer.Id).Name,
                 Price = c.Price,
                 Year = c.Year,
             }).ToList();

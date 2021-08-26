@@ -55,11 +55,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Trucks">Trucks</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Manufacturers/Index">Manufacturers</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Movies/Index">Movies</a>
                         </li>
                     </ul>
-                    <form class="form-inline">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                    <form class="form-inline" action="/Search">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
                         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                     </form>
                     <ul class="nav navbar-nav navbar-right">

@@ -29,6 +29,9 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
                     b.Property<bool>("HasRadio")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int?>("ManufacturerId")
                         .HasColumnType("int");
 
@@ -68,7 +71,7 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Movie", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -85,7 +88,7 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Movies");
                 });
@@ -99,6 +102,9 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 
                     b.Property<int>("LoadVolumeKvm")
                         .HasColumnType("int");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ManufacturerId")
                         .HasColumnType("int");
@@ -124,20 +130,23 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Car", b =>
                 {
-                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", "Manufacturer")
-                        .WithMany()
+                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", null)
+                        .WithMany("Cars")
                         .HasForeignKey("ManufacturerId");
-
-                    b.Navigation("Manufacturer");
                 });
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Truck", b =>
                 {
-                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", "Manufacturer")
-                        .WithMany()
+                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", null)
+                        .WithMany("Trucks")
                         .HasForeignKey("ManufacturerId");
+                });
 
-                    b.Navigation("Manufacturer");
+            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Manufacturer", b =>
+                {
+                    b.Navigation("Cars");
+
+                    b.Navigation("Trucks");
                 });
 #pragma warning restore 612, 618
         }

@@ -4,6 +4,7 @@
     ViewData["Title"] = "Edit Car";
 }
 <form method="post">
+    <input type="hidden" asp-for="Id" />
     <div class="form-group">
         <label asp-for="RegNo">Regno</label>
         <input class="form-control" asp-for="RegNo" value="@Model.RegNo" />

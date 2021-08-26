@@ -1,0 +1,38 @@
+﻿@page
+@model AspNetCoreWebAppCodeFirst.Pages.Manufacturers.IndexModel
+@{
+}
+@{
+    ViewData["Title"] = "Manufacturers";
+}
+
+<h1>@Model.ViewData["Title"]</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+<table class="table table-striped">
+    <thead class="thead-dark">
+        <tr>
+            <th scope="col">
+                Name
+            </th>
+            <th scope="col">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var manufacturer in Model.Manufacturers)
+        {
+            <tr>
+                <th scope="row">@manufacturer.Name</th>
+                <td>
+                    <a asp-page="./Edit" asp-route-manufacturerId="@manufacturer.Id" class="btn btn-primary">Edit</a>
+                    <a asp-page="./Details" asp-route-manufacturerId="@manufacturer.Id" class="btn btn-primary">Details</a>
+                    <a asp-page="./Delete" asp-route-manufacturerId="@manufacturer.Id" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

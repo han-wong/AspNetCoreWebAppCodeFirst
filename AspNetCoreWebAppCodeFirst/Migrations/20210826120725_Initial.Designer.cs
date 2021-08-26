@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AspNetCoreWebAppCodeFirst.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210825133634_Initial")]
+    [Migration("20210826120725_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -18,7 +18,7 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Car", b =>
@@ -30,6 +30,9 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 
                     b.Property<bool>("HasRadio")
                         .HasColumnType("bit");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ManufacturerId")
                         .HasColumnType("int");
@@ -68,6 +71,30 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
                     b.ToTable("Manufacturers");
                 });
 
+            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Movie", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Genre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("ReleaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Movies");
+                });
+
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Truck", b =>
                 {
                     b.Property<int>("Id")
@@ -77,6 +104,9 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 
                     b.Property<int>("LoadVolumeKvm")
                         .HasColumnType("int");
+
+                    b.Property<string>("Manufacturer")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ManufacturerId")
                         .HasColumnType("int");
@@ -102,20 +132,23 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Car", b =>
                 {
-                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", "Manufacturer")
-                        .WithMany()
+                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", null)
+                        .WithMany("Cars")
                         .HasForeignKey("ManufacturerId");
-
-                    b.Navigation("Manufacturer");
                 });
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Truck", b =>
                 {
-                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", "Manufacturer")
-                        .WithMany()
+                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", null)
+                        .WithMany("Trucks")
                         .HasForeignKey("ManufacturerId");
+                });
 
-                    b.Navigation("Manufacturer");
+            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Manufacturer", b =>
+                {
+                    b.Navigation("Cars");
+
+                    b.Navigation("Trucks");
                 });
 #pragma warning restore 612, 618
         }

@@ -19,7 +19,7 @@ namespace AspNetCoreWebAppCodeFirst.Pages
         }
 
 
-        public async Task OnGetAsync()
+        public void OnGet()
         {
         }
     }
