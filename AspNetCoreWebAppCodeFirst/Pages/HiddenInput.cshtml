@@ -1,0 +1,14 @@
+﻿@page
+@model AspNetCoreWebAppCodeFirst.Pages.HiddenInputModel
+@{
+}
+<h1>Nu har sidan laddats om @Model.Count gånger</h1>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            <input value="@Model.Count" asp-for="Count"/>
+            <button type="submit" class="btn btn-primary">Posta</button>
+        </form>
+    </div>
+</div>

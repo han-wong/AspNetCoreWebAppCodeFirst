@@ -16,5 +16,9 @@ namespace AspNetCoreWebAppCodeFirst.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<Truck> Trucks { get; set; }
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<UserRegistration> UserRegistrations { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<CV> CVs  { get; set; }
+        public DbSet<Education> Educations { get; set; }
     }
 }

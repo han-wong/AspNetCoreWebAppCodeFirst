@@ -5,11 +5,9 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreWebAppCodeFirst.Data
 {
-    public class Manufacturer
+    public class Education
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Car> Cars { get; set; } = new();
-        public List<Truck> Trucks { get; set; } = new ();
     }
 }

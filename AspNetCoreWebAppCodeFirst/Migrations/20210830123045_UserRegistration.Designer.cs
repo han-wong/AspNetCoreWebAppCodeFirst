@@ -4,59 +4,22 @@ using AspNetCoreWebAppCodeFirst.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AspNetCoreWebAppCodeFirst.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210830123045_UserRegistration")]
+    partial class UserRegistration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.CV", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("HasCar")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("HasLicense")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Mobile")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("PossibleWorkLocation")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Street")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ZipCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CVs");
-                });
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Car", b =>
                 {
@@ -103,26 +66,6 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
-                });
-
-            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Education", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("CVId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CVId");
-
-                    b.ToTable("Educations");
                 });
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Manufacturer", b =>
@@ -245,13 +188,6 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
                         .HasForeignKey("ManufacturerId");
                 });
 
-            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Education", b =>
-                {
-                    b.HasOne("AspNetCoreWebAppCodeFirst.Data.CV", null)
-                        .WithMany("Educations")
-                        .HasForeignKey("CVId");
-                });
-
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Truck", b =>
                 {
                     b.HasOne("AspNetCoreWebAppCodeFirst.Data.Manufacturer", null)
@@ -266,11 +202,6 @@ namespace AspNetCoreWebAppCodeFirst.Migrations
                         .HasForeignKey("CountryId");
 
                     b.Navigation("Country");
-                });
-
-            modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.CV", b =>
-                {
-                    b.Navigation("Educations");
                 });
 
             modelBuilder.Entity("AspNetCoreWebAppCodeFirst.Data.Manufacturer", b =>

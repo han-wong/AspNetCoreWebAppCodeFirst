@@ -1,0 +1,66 @@
+﻿@page
+@model AspNetCoreWebAppCodeFirst.Pages.CVModel
+@{
+}
+
+<div class="card">
+
+    <div class="card-body">
+        <form method="post">
+
+            <div class="form-row">
+                <div class="col form-group">
+                    <label asp-for="Name">Name</label>
+                    <input asp-for="Name" class="form-control">
+                    <span asp-validation-for="Name" class="field-validation-error"></span>
+                </div>
+
+                <div class="col form-group">
+                    <label asp-for="Mobile">Mobile</label>
+                    <input asp-for="Mobile" class="form-control" />
+                    <span asp-validation-for="Mobile" class="field-validation-error"></span>
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="col form-group">
+                    <label asp-for="Street">Street</label>
+                    <input asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="field-validation-error"></span>
+                </div>
+
+                <div class="col form-group">
+                    <label asp-for="ZipCode">Zip Code</label>
+                    <input asp-for="ZipCode" class="form-control" />
+                    <span asp-validation-for="ZipCode" class="field-validation-error"></span>
+                </div>
+
+            </div>
+            <div class="form-row">
+                <div class="col form-group">
+                    <label asp-for="City">City</label>
+                    <input asp-for="City" class="form-control" />
+                    <span asp-validation-for="City" class="field-validation-error"></span>
+                </div>
+                <div class="col">
+
+                    @foreach (var option in Model.AllPossibleWorkLocations)
+                    {
+                        <div class="form-check">
+                            <input asp-for="SelectedLocation" class="form-check-input" id="option" type="radio" value="option">
+                            <label asp-for="SelectedLocation">@option</label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col form-group">
+                    <label asp-for="Street">Street</label>
+                    <input asp-for="Street" class="form-control" />
+                    <span asp-validation-for="Street" class="field-validation-error"></span>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

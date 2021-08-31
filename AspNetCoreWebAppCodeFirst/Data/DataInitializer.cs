@@ -8,7 +8,7 @@ namespace AspNetCoreWebAppCodeFirst.Data
 {
     public class DataInitializer
     {
-        private static readonly List<Manufacturer> _seedManufacturers = new()
+        private static readonly List<Manufacturer> _ManufacturerSeeds = new()
         {
             new Manufacturer
             {
@@ -66,23 +66,58 @@ namespace AspNetCoreWebAppCodeFirst.Data
             },
         };
 
-        public static void SeedData(ApplicationDbContext context)
+        
+
+        public static void SeedData(ApplicationDbContext dbContext)
         {
-            context.Database.Migrate();
-            if (!context.Manufacturers.Any())
+            dbContext.Database.Migrate();
+            if (!dbContext.Manufacturers.Any())
+                SeedManufacturers(dbContext);
+
+            if (!dbContext.Cars.Any())
+                SeedCars(dbContext);
+
+            if (!dbContext.Trucks.Any())
+                SeedTrucks(dbContext);
+
+            if (!dbContext.Countries.Any())
+                SeedCountries(dbContext);
+
+            if (!dbContext.Educations.Any())
+                SeedEducations(dbContext);
+
+        }
+
+        private static void SeedEducations(ApplicationDbContext dbContext)
+        {
+            var educationNames = new List<string> { "Secondary (middle or high school)",  "Vocational Education", "Undergraduate", "Graduate / Postgraduate" };
+            foreach (var educationName in educationNames)
             {
-                SeedManufacturers(context);
-                SeedCars(context);
-                SeedTrucks(context);
+                if (dbContext.Educations.All(education => education.Name != educationName))
+                    dbContext.Educations.Add(new Education { Name = educationName });
             }
+
+            dbContext.SaveChanges();
+        }
+
+        private static void SeedCountries(ApplicationDbContext dbContext)
+        {
+            var countryNames = new List<string> { "Sverige", "Danmark", "Norge" };
+            foreach (var countryName in countryNames)
+            {
+                if (dbContext.Countries.All(country => country.Name != countryName))
+                    dbContext.Countries.Add(new Country { Name = countryName });
+            }
+
+            dbContext.SaveChanges();
         }
 
         private static void SeedManufacturers(ApplicationDbContext context)
         {
-            foreach (var seedManufacturer in _seedManufacturers)
+            foreach (var seedManufacturer in _ManufacturerSeeds)
             {
                 var seedName = seedManufacturer.Name;
-                if (!context.Manufacturers.Any(manufacturer => manufacturer.Name == seedName))
+                if (context.Manufacturers.All(manufacturer => manufacturer.Name != seedName))
                     context.Manufacturers.Add(new Manufacturer { Name = seedName });
             }
 
@@ -91,13 +126,13 @@ namespace AspNetCoreWebAppCodeFirst.Data
 
         private static void SeedCars(ApplicationDbContext context)
         {
-            foreach (var seedManufacturer in _seedManufacturers)
+            foreach (var manufacturerSeed in _ManufacturerSeeds)
             {
-                var contextCars = context.Manufacturers.First(manufacturer => manufacturer.Name == seedManufacturer.Name).Trucks;
-                foreach (var seedCar in seedManufacturer.Trucks)
+                var contextCars = context.Manufacturers.First(manufacturer => manufacturer.Name == manufacturerSeed.Name).Cars;
+                foreach (var carSeed in manufacturerSeed.Cars)
                 {
-                    if (contextCars.Any(car => car.RegNo == seedCar.RegNo))
-                        contextCars.Add(seedCar);
+                    if (contextCars.All(car => car.RegNo != carSeed.RegNo))
+                        contextCars.Add(carSeed);
                 }
             }
 
@@ -106,13 +141,13 @@ namespace AspNetCoreWebAppCodeFirst.Data
 
         private static void SeedTrucks(ApplicationDbContext context)
         {
-            foreach (var seedManufacturer in _seedManufacturers)
+            foreach (var manufacturerSeed in _ManufacturerSeeds)
             {
-                var contextTrucks = context.Manufacturers.First(manufacturer => manufacturer.Name == seedManufacturer.Name).Trucks;
-                foreach (var seedTruck in seedManufacturer.Trucks)
+                var contextTrucks = context.Manufacturers.First(manufacturer => manufacturer.Name == manufacturerSeed.Name).Trucks;
+                foreach (var truckSeed in manufacturerSeed.Trucks)
                 {
-                    if (contextTrucks.Any(truck => truck.RegNo == seedTruck.RegNo))
-                        contextTrucks.Add(seedTruck);
+                    if (contextTrucks.All(truck => truck.RegNo != truckSeed.RegNo))
+                        contextTrucks.Add(truckSeed);
                 }
             }
 

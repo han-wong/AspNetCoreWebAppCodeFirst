@@ -14,14 +14,20 @@ namespace AspNetCoreWebAppCodeFirst.Pages.Cars
     [BindProperties]
     public class EditModel : PageModel
     {
-        private readonly ApplicationDbContext _context;
-        public EditModel(ApplicationDbContext context)
+        private readonly ApplicationDbContext _dbContext;
+        public EditModel(ApplicationDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
 
-        public int Id { get; set; }
         public List<SelectListItem> AllManufacturers { get; set; }
+
+        public Manufacturer Manufacturer  { get; set; }
+
+        public Car Car { get; set; }
+
+        [HiddenInput]
+        public int CarId { get; set; }
 
         public bool HasRadio { get; set; }
 
@@ -38,6 +44,8 @@ namespace AspNetCoreWebAppCodeFirst.Pages.Cars
         [Range(1950, 2025)]
         public int Year { get; set; }
 
+        
+
         public IActionResult OnGet(int carId)
         {
             if (carId == 0)
@@ -45,53 +53,53 @@ namespace AspNetCoreWebAppCodeFirst.Pages.Cars
                 return NotFound();
             }
 
-            Id = carId;
-            var currentCar =_context.Cars.First(car => car.Id == carId);
+            CarId = carId;
 
-            if (currentCar == null)
+            Car = _dbContext.Cars.First(car => car.Id == CarId);
+
+            if (Car == null)
             {
                 return NotFound();
             }
 
-            HasRadio = currentCar.HasRadio;
-            ManufacturerId = _context.Manufacturers.First(manufacturer => manufacturer.Cars.Contains(currentCar)).Id;
-            Model = currentCar.Model;
-            Price = currentCar.Price;
-            RegNo = currentCar.RegNo;
-            Year = currentCar.Year;
+            AllManufacturers = _dbContext.Manufacturers.Select(manufacturer => new SelectListItem(manufacturer.Name, manufacturer.Id.ToString())).ToList();
 
-            AllManufacturers = _context.Manufacturers.Select(manufacturer => new SelectListItem
-            {
-                Text = manufacturer.Name,
-                Value = manufacturer.Id.ToString()
-            }).ToList();
+            HasRadio = Car.HasRadio;
+            Manufacturer = _dbContext.Manufacturers.First(manufacturer => manufacturer.Cars.Contains(Car));
+            ManufacturerId = ManufacturerId;
+            Model = Car.Model;
+            Price = Car.Price;
+            RegNo = Car.RegNo;
+            Year = Car.Year;
 
             return Page();
         }
 
         public IActionResult OnPost()
         {
-            var currentCar = _context.Cars.First(car => car.Id == Id);
+            Car = _dbContext.Cars.First(firstCar => firstCar.Id == CarId);
 
-            if (currentCar == null)
+            if (Car == null)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                var currentManufacturer = _context.Manufacturers.First(manufacturer => manufacturer.Id == ManufacturerId);
-                if (!currentManufacturer.Cars.Contains(currentCar))
+                Manufacturer = _dbContext.Manufacturers.First(manufacturer => manufacturer.Id == ManufacturerId);
+                if (!Manufacturer.Cars.Contains(Car))
                 {
-                    currentManufacturer.Cars.Add(currentCar);
+                    Manufacturer.Cars.Add(Car);
                 }
-                currentCar.HasRadio = HasRadio;
-                currentCar.Model = Model;
-                currentCar.Price = Price;
-                currentCar.Year = Year;
-                _context.SaveChanges();
+                Car.HasRadio = HasRadio;
+                Car.Model = Model;
+                Car.Price = Price;
+                Car.Year = Year;
+            
+                _dbContext.SaveChanges();
                 return RedirectToPage("./Index");
             }
+
             return Page();
         }
     }
